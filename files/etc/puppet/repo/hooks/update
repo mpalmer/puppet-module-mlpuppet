@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+REF="$1"
+OLDREV="$2"
+NEWREV="$3"
+
+cd /etc/puppet
+
+git --git-dir /etc/puppet/repo archive --format=tar "$NEWREV" | tar xf -
+
+librarian-puppet install
+
+puppet apply nodes/$(hostname -f).pp
