@@ -8,8 +8,8 @@ NEWREV="$3"
 
 cd /etc/puppet
 
-git --git-dir /etc/puppet/repo archive --format=tar "$NEWREV" | tar xf -
+git --git-dir /etc/puppet/repo archive --format=tar "$NEWREV" | sudo tar xf -
 
-librarian-puppet install
+sudo librarian-puppet install
 
-puppet apply nodes/$(hostname -f).pp
+sudo puppet apply nodes/$(hostname -f).pp
