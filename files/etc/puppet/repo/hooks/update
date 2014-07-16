@@ -12,4 +12,4 @@ git --git-dir /etc/puppet/repo archive --format=tar "$NEWREV" | sudo tar xf -
 
 sudo librarian-puppet install
 
-sudo puppet apply nodes/$(hostname -f).pp
+sudo puppet apply ./nodes
