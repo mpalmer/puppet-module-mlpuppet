@@ -2,8 +2,8 @@
 
 set -e
 
-<% if splay != 0 -%>
-sleep $(($RANDOM % <%= splay %>))
+<% if @splay != 0 -%>
+sleep $(($RANDOM % <%= @splay %>))
 <%end -%>
 
 cd /etc/puppet

@@ -28,7 +28,6 @@
 #     cron job won't get you anywhere good.
 #
 define mlpuppet::gitpull(
-		$url,
 		$period = 'hourly',
 		$splay = 0,
 ) {
