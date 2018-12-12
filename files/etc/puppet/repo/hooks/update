@@ -12,13 +12,13 @@ git --git-dir /etc/puppet/repo archive --format=tar "$NEWREV" | sudo tar xf -
 
 sudo librarian-puppet install
 
-sudo puppet apply ./nodes
+sudo puppet apply --show_diff ./nodes
 
 # Apply puppet to all containers on the node, too
 if [ -d /srv/lxc ]; then
 	for d in /srv/lxc/*; do
 		if [ -f "$d/config" ]; then
-			sudo lxc-attach -n $(basename $d) puppet apply /etc/puppet/nodes
+			sudo lxc-attach -n $(basename $d) -- puppet apply --show_diff /etc/puppet/nodes
 		fi
 	done
 fi
