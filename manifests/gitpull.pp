@@ -31,12 +31,12 @@ define mlpuppet::gitpull(
 		$period = 'hourly',
 		$splay = 0,
 ) {
-   file { "/usr/local/sbin/mlpuppet-gitpull":
-   	ensure  => file,
-   	content => template("mlpuppet/usr/local/sbin/mlpuppet-gitpull"),
-   	owner   => "root",
-   	group   => "root",
-   	mode    => 0555,
+	file { "/usr/local/sbin/mlpuppet-gitpull":
+		ensure  => file,
+		content => template("mlpuppet/usr/local/sbin/mlpuppet-gitpull"),
+		owner   => "root",
+		group   => "root",
+		mode    => "0555",
 	}
 
 	cron { "mlpuppet-gitpull":
