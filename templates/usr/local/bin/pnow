@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+puppet apply /etc/puppet --show_diff <%= @future_parser ? "--parser=future " : "" %>/etc/puppet/nodes
