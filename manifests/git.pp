@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 class mlpuppet::git(
 		$future_parser = false,
 ) {
