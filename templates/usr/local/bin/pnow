@@ -2,4 +2,4 @@
 
 set -e
 
-puppet apply /etc/puppet --show_diff <%= @future_parser ? "--parser=future " : "" %>/etc/puppet/nodes
+puppet apply --show_diff <%= @future_parser ? "--parser=future " : "" %>/etc/puppet/nodes
