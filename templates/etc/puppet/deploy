@@ -46,6 +46,13 @@ trap "rm -rf '$WORKDIR'" EXIT
 
 cd "$WORKDIR"
 
+if [ -d "/etc/puppet/gnupg" ]; then
+	if ! GNUPGHOME=/etc/puppet/gnupg git -C /etc/puppet/repo verify-commit "$REVISION"; then
+		echo "Signature verification failed.  Aborting deploy." >&2
+		exit 1
+	fi
+fi
+
 git --git-dir /etc/puppet/repo archive --format=tar "$REVISION" | sudo tar xf -
 
 LIBRARIAN_PUPPET_TMP=/etc/puppet/modules/.cache /usr/local/bin/librarian-puppet install --path /etc/puppet/modules
