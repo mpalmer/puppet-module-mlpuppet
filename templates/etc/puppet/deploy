@@ -1,0 +1,82 @@
+#!/bin/bash
+
+set -e
+
+if [ -n "${PUPPET_DEPLOY_TRACE:-}" ]; then
+	set -o xtrace
+fi
+
+if [ -e "/var/lib/puppet/lock" ]; then
+	echo "Not running Puppet due to manual lock-out." >&2
+	cat /var/lib/puppet/lock >&2
+	exit 1
+fi
+
+# librarian-puppet has a shit-fit if it can't find the `puppet` binary in the
+# $PATH.  WHY DO YOU POSSIBLY CARE, LIBRARIAN-PUPPET?
+PATH="/usr/local/bin:$PATH"
+
+quiet_mode() {
+	if [ -t 0 ] || [ -n "$VERBOSE" ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+REVISION="master"
+
+while getopts 'qsvr:' opt; do
+	case $opt in
+		q)
+			QUICK="y";;
+		s)
+			SPLAY="180";;
+		v)
+			VERBOSE="y";;
+		r)
+			REVISION="$OPTARG";;
+	esac
+done
+shift $((OPTIND - 1))
+
+WORKDIR="$(mktemp -d)"
+
+trap "rm -rf '$WORKDIR'" EXIT
+
+cd "$WORKDIR"
+
+git --git-dir /etc/puppet/repo archive --format=tar "$REVISION" | sudo tar xf -
+
+LIBRARIAN_PUPPET_TMP=/etc/puppet/modules/.cache /usr/local/bin/librarian-puppet install --path /etc/puppet/modules
+
+# Can't stand to have out-of-date package lists
+if [ -z "$QUICK" ]; then
+       if quiet_mode; then
+               /usr/bin/apt-get update -qq || true
+       else
+               /usr/bin/apt-get update || true
+       fi
+fi
+
+if [ -n "$SPLAY" ]; then
+       sleep $((RANDOM % $SPLAY))
+fi
+
+if quiet_mode; then
+	/usr/local/bin/puppet apply --confdir=$(pwd) --modulepath=$(pwd)/modules:/etc/puppet/modules --log_level=warning --detailed-exitcodes <%= @future_parser ? "--parser=future " : "" %>./nodes "$@" || rv="$?"
+else
+	/usr/local/bin/puppet apply --confdir=$(pwd) --modulepath=$(pwd)/modules:/etc/puppet/modules --show_diff --detailed-exitcodes <%= @future_parser ? "--parser=future " : "" %>./nodes "$@" || rv="$?"
+fi
+
+if ! [[ "$rv" = "" || "$rv" = "0" || "$rv" = "2" ]]; then
+	# Something has gone terribly wrong, bale out now
+	exit $rv
+fi
+
+if [ -d "/var/lib/prometheus/node-exporter" ]; then
+	echo puppet_last_run_time "$(date +%s)" >/var/lib/prometheus/node-exporter/puppet_last_run_time.prom.$$
+	mv /var/lib/prometheus/node-exporter/puppet_last_run_time.prom.$$ /var/lib/prometheus/node-exporter/puppet_last_run_time.prom
+fi
+
+exit 0
