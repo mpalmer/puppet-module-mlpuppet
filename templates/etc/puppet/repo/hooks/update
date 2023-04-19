@@ -6,9 +6,13 @@ REF="$1"
 OLDREV="$2"
 NEWREV="$3"
 
-if [ "$REF" != "refs/heads/master" ]; then
-	echo "ERROR: must push to master" >&2
+if [ "$REF" = "refs/heads/noop" ]; then
+	noop="--noop"
+elif [ "$REF" = "refs/heads/main" ]; then
+	noop=""
+else
+	echo "ERROR: must push to main or noop" >&2
 	exit 1
 fi
 
-sudo /etc/puppet/deploy -v -r "$NEWREV"
+sudo /etc/puppet/deploy -v -r "$NEWREV" -- "$noop"
