@@ -31,7 +31,7 @@
 #
 #    Whether to tell Puppet to use the "future" parser.
 #
-define mlpuppet::gitpull(
+class mlpuppet::gitpull(
 		$period = 'hourly',
 		$splay = 0,
 		$future_parse = false,
