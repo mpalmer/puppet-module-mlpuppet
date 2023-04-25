@@ -27,16 +27,34 @@
 #     Puppet run.  Setting this to a value larger than the periodicity of the
 #     cron job won't get you anywhere good.
 #
+#  * `future_parser (optional; boolean; default `false`)
+#
+#    Whether to tell Puppet to use the "future" parser.
+#
 define mlpuppet::gitpull(
 		$period = 'hourly',
 		$splay = 0,
+		$future_parse = false,
 ) {
-	file { "/usr/local/sbin/mlpuppet-gitpull":
-		ensure  => file,
-		content => template("mlpuppet/usr/local/sbin/mlpuppet-gitpull"),
-		owner   => "root",
-		group   => "root",
-		mode    => "0555",
+	file {
+		"/usr/local/sbin/mlpuppet-gitpull":
+			ensure  => file,
+			content => template("mlpuppet/usr/local/sbin/mlpuppet-gitpull"),
+			owner   => "root",
+			group   => "root",
+			mode    => "0555";
+		"/etc/puppet/deploy":
+			ensure  => file,
+			content => template("mlpuppet/etc/puppet/deploy"),
+			owner   => "root",
+			group   => "root",
+			mode    => "0555";
+		"/usr/local/bin/pnow":
+			ensure  => file,
+			content => template("mlpuppet/usr/local/bin/pnow"),
+			owner   => "root",
+			group   => "root",
+			mode    => "0555";
 	}
 
 	cron { "mlpuppet-gitpull":
