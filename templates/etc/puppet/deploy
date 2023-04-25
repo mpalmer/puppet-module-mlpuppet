@@ -24,7 +24,7 @@ quiet_mode() {
 	fi
 }
 
-REVISION="master"
+REVISION="<%= @default_ref %>"
 
 while getopts 'qsvr:' opt; do
 	case $opt in

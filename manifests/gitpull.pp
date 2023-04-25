@@ -35,6 +35,7 @@ define mlpuppet::gitpull(
 		$period = 'hourly',
 		$splay = 0,
 		$future_parse = false,
+		$default_ref = "master",
 ) {
 	file {
 		"/usr/local/sbin/mlpuppet-gitpull":

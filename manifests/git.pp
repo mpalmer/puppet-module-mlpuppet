@@ -1,5 +1,6 @@
 class mlpuppet::git(
 		$future_parser = false,
+		$default_ref = "master",
 ) {
 	file {
 		"/etc/puppet/deploy":
