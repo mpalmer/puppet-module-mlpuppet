@@ -6,8 +6,8 @@ set -e
 sleep $(($RANDOM % <%= @splay %>))
 <%end -%>
 
-cd /etc/puppet
+cd /etc/puppet/repo
 
 git pull
 
-puppet apply ./nodes
+/etc/puppet/deploy

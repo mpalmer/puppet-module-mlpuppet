@@ -23,7 +23,7 @@
 #     all fire off at exactly the same moment (if nothing else, your git
 #     repo server might have a minor sad).  By setting `splay` to a non-zero
 #     value, this will cause the script to pause for a random period of time
-#     between `1` and `splay - 1` seconds before doing the `git pull` and
+#     between `0` and `splay - 1` seconds before doing the `git pull` and
 #     Puppet run.  Setting this to a value larger than the periodicity of the
 #     cron job won't get you anywhere good.
 #
