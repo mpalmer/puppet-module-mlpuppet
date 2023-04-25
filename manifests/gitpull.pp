@@ -34,7 +34,7 @@
 class mlpuppet::gitpull(
 		$period = 'hourly',
 		$splay = 0,
-		$future_parse = false,
+		$future_parser = false,
 		$default_ref = "master",
 ) {
 	file {
