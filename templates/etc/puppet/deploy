@@ -36,6 +36,9 @@ while getopts 'qsvr:' opt; do
 			VERBOSE="y";;
 		r)
 			REVISION="$OPTARG";;
+		h)
+			echo "$0 [-qsv] [-r <revision>]" >&2
+			exit 1;;
 	esac
 done
 shift $((OPTIND - 1))
