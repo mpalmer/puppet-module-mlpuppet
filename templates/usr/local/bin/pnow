@@ -2,4 +2,8 @@
 
 set -e
 
+if [ git -C /etc/puppet/repo remote | grep -q origin ]; then
+	git -C /etc/puppet/repo fetch origin
+fi
+
 sudo /etc/puppet/deploy "$@"
