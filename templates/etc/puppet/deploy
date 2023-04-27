@@ -2,9 +2,27 @@
 
 set -e
 
-if [ -n "${PUPPET_DEPLOY_TRACE:-}" ]; then
-	set -o xtrace
-fi
+REVISION="<%= @default_ref %>"
+
+while getopts 'qsvr:' opt; do
+	case $opt in
+		d)
+			DEBUG="y"
+			set -x;;
+		q)
+			QUICK="y";;
+		s)
+			SPLAY="180";;
+		v)
+			VERBOSE="y";;
+		r)
+			REVISION="$OPTARG";;
+		h)
+			echo "$0 [-dqsv] [-r <revision>]" >&2
+			exit 1;;
+	esac
+done
+shift $((OPTIND - 1))
 
 if [ -e "/var/lib/puppet/lock" ]; then
 	echo "Not running Puppet due to manual lock-out." >&2
@@ -23,25 +41,6 @@ quiet_mode() {
 		return 0
 	fi
 }
-
-REVISION="<%= @default_ref %>"
-
-while getopts 'qsvr:' opt; do
-	case $opt in
-		q)
-			QUICK="y";;
-		s)
-			SPLAY="180";;
-		v)
-			VERBOSE="y";;
-		r)
-			REVISION="$OPTARG";;
-		h)
-			echo "$0 [-qsv] [-r <revision>]" >&2
-			exit 1;;
-	esac
-done
-shift $((OPTIND - 1))
 
 WORKDIR="$(mktemp -d)"
 
