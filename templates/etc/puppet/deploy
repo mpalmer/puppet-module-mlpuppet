@@ -57,6 +57,8 @@ fi
 
 git -C /etc/puppet/repo archive --format=tar "$REVISION" | sudo tar xf -
 
+sed -i "s|%%pwd%%|$(pwd)|g" ./fileserver.conf
+
 LIBRARIAN_PUPPET_TMP=/etc/puppet/modules/.cache /usr/local/bin/librarian-puppet install --path /etc/puppet/modules
 
 # Can't stand to have out-of-date package lists
